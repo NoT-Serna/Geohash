@@ -2,6 +2,7 @@
 #include<math.h> 
 #include<string>
 #include<random>
+#include<cmath>
 #include<cstdlib>
 using namespace std;
 //Establecer coordenadas
@@ -165,22 +166,40 @@ public:
 
     }
 
-    //hash
-    /*
-    string hash_function(Coordenada* c){
-        string bit_lon;
-        string bit_lat;
-        float start = -90.0;
-        float finish = 90.0;
-        float iteration;
-        for(int i = 0; i<13; i++){
-            if(c->get_lat() < 0 && c->get_lat() > start){
-                bit_lat.append("0");
+    
+    string hash_function(){
+        int iteracion = 13;
+        string base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
+        string hash = " ";
+        float lat_min = -90.0;
+        float lat_max = 90.0;
+        float lon_min = -180.0;
+        float lon_max = 180.0;
+        Coordenada* c = coor;
+        
+        while(hash.length() < iteracion){
+            float lat_mid = (lat_min + lat_max) / 2;
+            float lon_mid = (lon_min + lon_max) / 2;
+            
+            if(c->get_lat() > lat_mid){
+                hash += "1";
+                lat_min = lat_mid;
+            }else{
+                hash += "0";
+                lat_max = lat_mid;
             }
-            if()
-       }
+            if(c->get_lon() > lon_mid){
+                hash += "1";
+                lon_min = lon_mid;
+            }else{
+                hash += "0";
+                lon_max = lon_mid;
+            }
+        }
+        cout<<hash;
+        
+        
     }
-    */
 
 
     string to_string(){
@@ -347,8 +366,13 @@ int main()
         //Establece las coordenadas aleatorias teniendo en cuenta los rangos de la latitud y longitud
         float lat = lat_min + static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (lat_max - lat_min));
         float lon = lon_min + static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (lon_max - lon_min));
-        c.push_back(new Coordenada(lat,lon)); 
+        
+       
+      c.push_back(new Coordenada(lat,lon));
+      cout<<"\n";
+      c.get(i)->hash_function();
     }
+    cout<<endl;
     c.print();
 
    return 0;
